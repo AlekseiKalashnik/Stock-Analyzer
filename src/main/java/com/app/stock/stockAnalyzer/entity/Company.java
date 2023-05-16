@@ -1,9 +1,6 @@
 package com.app.stock.stockAnalyzer.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Table;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,37 +18,39 @@ public class Company {
 
     @Id
     @Column
-    Integer id;
-
-    String symbol;
-
-    String exchange;
-
-    String exchangeSuffix;
-
-    String exchangeName;
-
-    String exchangeSegment;
-
-    String exchangeSegmentName;
-
-    String name;
-
-    LocalDate date;
-
-    String type;
-
-    String iexId;
-
-    String region;
-
-    String currency;
-
-    boolean isEnabled;
-
-    String figi;
-
-    Integer cik;
-
-    String lei;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+    @Column
+    private String symbol;
+    @Column
+    private String exchange;
+    @Column
+    private String exchangeSuffix;
+    @Column
+    private String exchangeName;
+    @Column
+    private String exchangeSegment;
+    @Column
+    private String exchangeSegmentName;
+    @Column
+    private String name;
+    @Column
+    private LocalDate date;
+    @Column
+    private String type;
+    @Column
+    private String iexId;
+    @Column
+    private String region;
+    @Column
+    @Enumerated(value = EnumType.STRING)
+    Currency currency;
+    @Column
+    private boolean isEnabled;
+    @Column
+    private String figi;
+    @Column
+    private Integer cik;
+    @Column
+    private String lei;
 }

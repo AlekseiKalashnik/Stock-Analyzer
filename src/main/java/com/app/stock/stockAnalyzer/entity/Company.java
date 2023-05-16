@@ -1,9 +1,6 @@
 package com.app.stock.stockAnalyzer.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Table;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -45,7 +42,8 @@ public class Company {
 
     String region;
 
-    String currency;
+    @Enumerated(value = EnumType.STRING)
+    Currency currency;
 
     boolean isEnabled;
 

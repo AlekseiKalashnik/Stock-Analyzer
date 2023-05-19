@@ -33,7 +33,7 @@ public enum Currency {
     XXX("XXX"), YER("YER"), ZAR("ZAR"), ZMW("ZMW");
 
 
-    private String name = "";
+    private final String name;
 
     Currency(String name) {
         this.name = name;

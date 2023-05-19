@@ -1,56 +1,71 @@
 package com.app.stock.stockAnalyzer.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.time.LocalDate;
+import lombok.*;
 
 @Entity
-@Table
+@Table(name = "company")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class Company {
 
-    @Id
     @Column
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private String address;
     @Column
-    private String symbol;
+    private String address2;
+    @Column
+    private String ceo;
+    @Column
+    private String city;
+    @Column
+    private String companyName;
+    @Column
+    private String country;
+    @Column
+    private String date;
+    @Column
+    private Double employees;
     @Column
     private String exchange;
     @Column
-    private String exchangeSuffix;
+    private String exchangeCode;
     @Column
-    private String exchangeName;
+    private String industry;
     @Column
-    private String exchangeSegment;
+    private String issuetype;
+    @Column(length = 5000)
+    private String longDescription;
     @Column
-    private String exchangeSegmentName;
+    private Double marketcap;
     @Column
-    private String name;
+    private String phone;
     @Column
-    private LocalDate date;
+    private String primarySicCode;
     @Column
-    private String type;
+    private String sector;
     @Column
-    private String iexId;
+    private String securityName;
     @Column
-    private String region;
+    private String securityType;
+    @Column(length = 5000)
+    private String shortDescription;
     @Column
-    @Enumerated(value = EnumType.STRING)
-    Currency currency;
+    private String state;
     @Column
-    private boolean isEnabled;
+    @Id
+    private String symbol;
     @Column
-    private String figi;
+    private String website;
     @Column
-    private Integer cik;
+    private String zip;
     @Column
-    private String lei;
+    private String id;
+    @Column
+    private String key;
+    @Column
+    private String subkey;
+    @Column
+    private String updated;
 }

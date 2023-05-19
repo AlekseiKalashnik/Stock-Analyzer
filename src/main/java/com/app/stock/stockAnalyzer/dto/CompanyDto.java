@@ -1,35 +1,41 @@
 package com.app.stock.stockAnalyzer.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class CompanyDto {
-    private String symbol;
-    private String exchange;
-    private String exchangeSuffix;
-    private String exchangeName;
-    private String exchangeSegment;
-    private String exchangeSegmentName;
-    private String name;
-    private LocalDate date;
-    private String type;
-    private String iexId;
-    private String region;
-    private String currency;
-    private boolean isEnabled;
-    private String figi;
-    private Integer cik;
-    private String lei;
 
-    //TODO to entity
-
-    //TODO to DTO
+    //TODO nested class
+    String address;
+    String address2;
+    String ceo;
+    String city;
+    String companyName;
+    String country;
+    String date;
+    Double employees;
+    String exchange;
+    String exchangeCode;
+    String industry;
+    String issuetype;
+    String longDescription;
+    Double marketcap;
+    String phone;
+    String primarySicCode;
+    String sector;
+    String securityName;
+    String securityType;
+    String shortDescription;
+    String state;
+    String symbol;
+    String website;
+    String zip;
+    String id;
+    String key;
+    String subkey;
+    String updated;
 }

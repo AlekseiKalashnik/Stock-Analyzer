@@ -1,11 +1,11 @@
 package com.app.stock.stockAnalyzer.service;
 
 import com.app.stock.stockAnalyzer.entity.CompanyResponse;
-import com.app.stock.stockAnalyzer.repository.CompanyRepository;
 import com.app.stock.stockAnalyzer.repository.CompanyResponseRepository;
-import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -14,53 +14,57 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.*;
 
 @Service
 @Slf4j(topic = "CompanyServiceLog:")
 @Transactional(readOnly = true)
-@RequiredArgsConstructor
 public class CompanyService {
     private final String TOKEN = "pk_af20fbfdc8844348922c69e10992fdcc";
     private final String ID = "last=1";
     private final String BASE_URL = "https://cloud.iexapis.com/v1";
-    private final String GET_COMPANY_BY_SYMBOL = BASE_URL + "/data/core/company?" + ID + "&token=" + TOKEN;
+    //    private final String GET_COMPANY_BY_SYMBOL = BASE_URL + "/data/core/company?" + ID + "&token=" + TOKEN;
     private final String GET_COMPANY_RESPONSE = BASE_URL + "/ref-data/symbols?" + "token=" + TOKEN;
     private final RestTemplate restTemplate;
-    private final CompanyRepository companyRepository;
     private final CompanyResponseRepository companyResponseRepository;
 
-    @SneakyThrows
-    @Transactional
-    public void saveCompanies(Queue<CompanyResponse> companyResponseQueue) {
-        companyResponseRepository.saveAll(companyResponseQueue);
-        log.info("companies have saved");
+    ExecutorService executorService = Executors.newFixedThreadPool(2);
+
+    @Autowired
+    public CompanyService(RestTemplateBuilder restTemplate,
+                          CompanyResponseRepository companyResponseRepository) {
+        this.restTemplate = restTemplate.build();
+        this.companyResponseRepository = companyResponseRepository;
     }
 
-    //DONE
     @Async
     public CompletableFuture<ConcurrentLinkedQueue<CompanyResponse>> downloadCompaniesData() {
-        log.info("begin getCompanyResponse()");
+        log.info("begin downloadCompaniesData()");
         ResponseEntity<ConcurrentLinkedQueue<CompanyResponse>> response;
-        ConcurrentLinkedQueue<CompanyResponse> companiesResponse;
         response = restTemplate
                 .exchange(GET_COMPANY_RESPONSE,
                         HttpMethod.GET,
                         null,
                         new ParameterizedTypeReference<>() {
                         });
-        companiesResponse = response.getBody();
-        log.info("End of getCompanyResponse()");
-        return CompletableFuture.completedFuture(companiesResponse);
+        log.info("End of downloadCompaniesData()");
+        return CompletableFuture.supplyAsync(response::getBody, executorService);
     }
 
+    @SneakyThrows
     @Transactional
-    public List<CompanyResponse> getExistedCompanyList() {
-        log.info("begin getExistedCompanyList()");
-        return companyResponseRepository.findAll();
+    public void saveCompanies(Queue<CompanyResponse> companyResponseQueue) {
+        log.info("try to save companies");
+        companyResponseRepository.saveAll(companyResponseQueue);
+        log.info("companies have saved");
     }
+
+//    @Transactional
+//    public List<CompanyResponse> getExistedCompanyList() {
+//        log.info("begin getExistedCompanyList()");
+//        return companyResponseRepository.findAll();
+//    }
 
 //    @Async
 //    public CompletableFuture<ConcurrentLinkedQueue<Company>> getCompany() {

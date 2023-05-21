@@ -8,8 +8,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class StockDto {
-    //TODO nested class
+public class StockDTO {
+
     Integer avgTotalVolume;
     String calculationPrice;
     Double change;

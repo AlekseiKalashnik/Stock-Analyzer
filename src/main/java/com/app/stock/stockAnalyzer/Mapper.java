@@ -1,7 +1,7 @@
 package com.app.stock.stockAnalyzer;
 
-import com.app.stock.stockAnalyzer.dto.CompanyDto;
-import com.app.stock.stockAnalyzer.dto.StockDto;
+import com.app.stock.stockAnalyzer.dto.CompanyDTO;
+import com.app.stock.stockAnalyzer.dto.StockDTO;
 import com.app.stock.stockAnalyzer.entity.Company;
 import com.app.stock.stockAnalyzer.entity.Stock;
 import org.modelmapper.ModelMapper;
@@ -18,19 +18,19 @@ class Mapper {
         this.modelMapper = modelMapper;
     }
 
-    private Company convertToCompany(CompanyDto companyDto) {
+    private Company convertToCompany(CompanyDTO companyDto) {
         return modelMapper.map(companyDto, Company.class);
     }
 
-    private CompanyDto convertToCompanyDto(Company company) {
-        return modelMapper.map(company, CompanyDto.class);
+    private CompanyDTO convertToCompanyDto(Company company) {
+        return modelMapper.map(company, CompanyDTO.class);
     }
 
-    private Stock convertToStock(StockDto stockDto) {
+    private Stock convertToStock(StockDTO stockDto) {
         return modelMapper.map(stockDto, Stock.class);
     }
 
-    private StockDto convertToStockDto(Stock stock) {
-        return modelMapper.map(stock, StockDto.class);
+    private StockDTO convertToStockDto(Stock stock) {
+        return modelMapper.map(stock, StockDTO.class);
     }
 }

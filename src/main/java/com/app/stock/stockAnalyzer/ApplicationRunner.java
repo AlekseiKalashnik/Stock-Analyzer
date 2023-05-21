@@ -2,13 +2,18 @@ package com.app.stock.stockAnalyzer;
 
 import com.app.stock.stockAnalyzer.service.CompanyService;
 import com.app.stock.stockAnalyzer.service.StockService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.util.concurrent.ExecutionException;
+
 @Component
+@Slf4j(topic = "RunnerLog:")
 @EnableAsync
 @EnableScheduling
 public class ApplicationRunner {
@@ -22,10 +27,17 @@ public class ApplicationRunner {
         this.stockService = stockService;
     }
 
-    @Scheduled(fixedRate = 5000)
-    public void runMethod() {
-        System.out.println("Begin run method");
-        companyService.saveCompany();
-        stockService.saveStock();
+    @Async
+    @Scheduled(fixedRateString = "${interval}")
+    public void runMethod() throws InterruptedException, ExecutionException {
+        log.info("begin runMethod");
+
+        companyService.saveCompanies(companyService.downloadCompaniesData().get());
+
+        stockService.saveStocks(stockService.downloadStocksData());
+
+        stockService.printTopFiveHighestValueStocks();
+        stockService.printTopFiveTheGreatestChangePercent();
+        log.info("end of submit runMethod");
     }
 }

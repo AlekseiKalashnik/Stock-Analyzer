@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigInteger;
+import java.util.Comparator;
 
 @Entity
 @Table(name = "stock")
@@ -130,5 +131,4 @@ public class Stock {
     private Double ytdChange;
     @Column
     private boolean isUSMarketOpen;
-
 }

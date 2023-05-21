@@ -13,9 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Queue;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.*;
+import java.util.concurrent.*;
 
 @Service
 @Slf4j(topic = "StockServiceLog:")
@@ -24,34 +23,106 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class StockService {
     private final RestTemplate restTemplate;
     private final StockRepository stockRepository;
+    private final CompanyService companyService;
 
     private final String TOKEN = "pk_af20fbfdc8844348922c69e10992fdcc";
-    private final String COMPANY = "MSFT";
-    private final String BASE_URL = "https://api.iex.cloud/v1/";
-    private final String GET_STOCK_BY_SYMBOL = BASE_URL + "data/core/quote/" + COMPANY + "?token=" + TOKEN;
+    private final String COMPANY_SYMBOL = "MSFT";
+    private final String GET_STOCK_BY_SYMBOL = "https://api.iex.cloud/v1/data/core/quote/" + COMPANY_SYMBOL + "?token=" + TOKEN;
+    private final String GET_STOCK_COLLECTION = "https://api.iex.cloud/v1/data/core/" + "stock_collection/list?collectionName=iexvolume&token=" + TOKEN;
 
-    @Async
-    public CompletableFuture<Queue<Stock>> getStockQueue(String companyName) {
-        log.info("begin getStockQueue()");
+    public ConcurrentLinkedQueue<Stock> downloadStocksData() {
         ResponseEntity<ConcurrentLinkedQueue<Stock>> response = restTemplate
-                .exchange(BASE_URL + "data/core/quote/" + companyName + "?token=" + TOKEN,
+                .exchange(GET_STOCK_COLLECTION,
                         HttpMethod.GET,
                         null,
-                        new ParameterizedTypeReference<ConcurrentLinkedQueue<Stock>>() {
+                        new ParameterizedTypeReference<>() {
                         });
-        ConcurrentLinkedQueue<Stock> stocks = response.getBody();
-        log.info("extract StockEntity");
+        return response.getBody();
+    }
+
+    @Transactional
+    public void printTopFiveHighestValueStocks() {
+        stockRepository.findAll().stream()
+                .sorted(Comparator.comparing(Stock::getVolume)
+                        .thenComparing(Stock::getCompanyName)).limit(5)
+                .forEach(x -> System.out.println("Company: " + x.getCompanyName() +
+                        ",  " + '\n' + " volume: " + x.getVolume() + '\n'));
+    }
+
+    @Transactional
+    public void printTopFiveTheGreatestChangePercent() {
+        List<Stock> oldDBData = stockRepository.findAll();
+        ConcurrentLinkedQueue<Stock> freshStocksData = downloadStocksData();
+        Map<String, Double> map = new ConcurrentHashMap<>();
+
+        for (Stock fresh : freshStocksData) {
+            for (Stock old : oldDBData) {
+                double percent = Math.abs(old.getLatestPrice() - fresh.getLatestPrice()) / fresh.getLatestPrice() * 100;
+                if (percent != 0) {
+                    map.put(old.getCompanyName(), percent);
+                }
+            }
+        }
+        map.entrySet().stream().sorted(Map.Entry.comparingByValue()).limit(5)
+                .forEach(x -> System.out.println("Percent diff of company: " + x));
+    }
+
+    @Transactional
+    @SneakyThrows
+    public void saveStocks(Queue<Stock> stockQueue) {
+        log.info("try to save stocks");
+        stockRepository.saveAll(stockQueue);
+        log.info("stocks have saved");
+    }
+
+    //TODO нужна ли здесь очередь?
+    @SneakyThrows
+    @Async
+    @Transactional
+    public CompletableFuture<ConcurrentLinkedQueue<Stock>> getAllStocksData() {
+        log.info("try downloadAllStocksData");
+        ConcurrentLinkedQueue<Stock> stocks;
+//        for (CompanyResponse companyResponse : companyService.getExistedCompanyList()) {
+        ResponseEntity<ConcurrentLinkedQueue<Stock>> response = restTemplate
+                .exchange(GET_STOCK_COLLECTION,
+                        HttpMethod.GET,
+                        null,
+                        new ParameterizedTypeReference<>() {
+                        });
+        log.info("try to put response to queue");
+        stocks = response.getBody();
+        //resultQueue.add(stocks.peek());
 //        System.out.println(stocks);
-        log.info("end of getCompanyQueue()");
+//        }
+        log.info("end of downloadAllStocksData()");
         return CompletableFuture.completedFuture(stocks);
     }
 
-    @SneakyThrows
-    @Transactional
-    public void saveStock() {
-        stockRepository.saveAll(getStockQueue(COMPANY).get());
-        log.info("stock has saved");
-    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//    @Transactional
+//    public List<Stock> getStockLatestPriceListFromDB() {
+//        return stockRepository.findAll().stream()
+//                .sorted(Comparator.comparing(Stock::getLatestPrice))
+//                .collect(Collectors.toList());
+//    }
+//
+//    //Not finish
+//    @Transactional
+//    public void printTopFiveChangePercentOfCompanies() {
+//        log.info("begin printTopFiveStocks()");
+//        ResponseEntity<ConcurrentLinkedQueue<Stock>> response = restTemplate
+//                .exchange(GET_STOCK_COLLECTION,
+//                        HttpMethod.GET,
+//                        null,
+//                        new ParameterizedTypeReference<ConcurrentLinkedQueue<Stock>>() {
+//                        });
+//        ConcurrentLinkedQueue<Stock> stocks = response.getBody();
+//        log.info("extract StockEntity");
+////        System.out.println(stocks);
+//        log.info("end of printTopFiveStocks()");
+//    }
 
 //    public List<Stock> getStock(String companyName) {
 //        System.out.println("Start");
@@ -70,5 +141,25 @@ public class StockService {
 //        System.out.println(stocks);
 //        System.out.println("End");
 //        return stocks;
+//    }
+
+//    DONE
+//    public CompletableFuture<ConcurrentLinkedQueue<Stock>> getStock(String companyName) {
+//        log.info("begin getStock()");
+//        ResponseEntity<ConcurrentLinkedQueue<Stock>> response = restTemplate
+//                .exchange(BASE_URL + "data/core/quote/" + companyName + "?token=" + TOKEN,
+//                        HttpMethod.GET,
+//                        null,
+//                        new ParameterizedTypeReference<ConcurrentLinkedQueue<Stock>>() {
+//                        });
+//        ConcurrentLinkedQueue<Stock> stocks = response.getBody();
+//        log.info("extract StockEntity");
+////        System.out.println(stocks);
+//        log.info("end of getStock()");
+//        if (stocks.isEmpty()) {
+//            throw new NoCompaniesInCollection();
+//        } else {
+//            return CompletableFuture.completedFuture(stocks);
+//        }
 //    }
 }

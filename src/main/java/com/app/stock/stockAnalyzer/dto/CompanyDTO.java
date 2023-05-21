@@ -7,9 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CompanyDto {
+public class CompanyDTO {
 
-    //TODO nested class
     String address;
     String address2;
     String ceo;

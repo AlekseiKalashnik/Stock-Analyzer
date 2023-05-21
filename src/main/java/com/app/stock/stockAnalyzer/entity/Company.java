@@ -7,12 +7,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "company_response")
+@Table(name = "company")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CompanyResponse {
+public class Company {
     @Id
     @Column
     String symbol;

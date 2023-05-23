@@ -10,23 +10,24 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
-@RequiredArgsConstructor
 @Service
 @Slf4j(topic = "CompanyServiceLog:")
-@Transactional(readOnly = true)
+@Transactional
+@RequiredArgsConstructor
 public class CompanyService {
     private final IexApiClient iexApiClient;
     private final CompanyRepository companyRepository;
 
-    @Async
     public List<Company> getCompaniesData() {
+        log.info("start getCompaniesData()");
         List<Company> companies = iexApiClient.getCompaniesData()
                 .join()
                 .stream()
                 .filter(Company::isEnabled)
                 .toList();
-
+        log.info("end of getCompaniesData()");
         return companyRepository.saveAll(companies);
     }
 }

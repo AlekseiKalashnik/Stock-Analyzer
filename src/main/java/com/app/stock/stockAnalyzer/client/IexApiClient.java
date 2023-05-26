@@ -2,15 +2,14 @@ package com.app.stock.stockAnalyzer.client;
 
 import com.app.stock.stockAnalyzer.dto.CompanyDTO;
 import com.app.stock.stockAnalyzer.dto.StockDTO;
-import com.app.stock.stockAnalyzer.entity.Company;
-import com.app.stock.stockAnalyzer.entity.Stock;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
-import org.springframework.boot.Banner;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -25,35 +24,40 @@ import java.util.concurrent.ExecutorService;
 public class IexApiClient {
     private final ExecutorService executorService;
     private final RestTemplate restTemplate;
-    private final ModelMapper modelMapper;
-    private final String HOST = "https://api.iex.cloud/";
-    private final String TOKEN = "sk_acb1e2487637499299d22a252580d311";
-    private final String GET_COMPANIES_RESPONSE = "https://api.iex.cloud/v1/data/CORE/REF_DATA?token=pk_399d40781ea3466bbea0df7436e7a128";
-    private final String GET_STOCK_RESPONSE = "https://api.iex.cloud/v1/data/core/quote/aapl?token=sk_acb1e2487637499299d22a252580d311";
+    @Value("${iexapi.host}")
+    private String HOST;
+    @Value("${iexapi.token}")
+    private String TOKEN;
+    @Value("${iexapi.companies_request}")
+    private String GET_COMPANIES_REQUEST;
+    @Value("${iexapi.stock_request}")
+    private String GET_STOCK_REQUEST;
 
     public CompletableFuture<ConcurrentLinkedQueue<CompanyDTO>> getCompaniesData() {
         log.info("start getCompaniesData()");
-        ResponseEntity<ConcurrentLinkedQueue<CompanyDTO>> response;
-        response = restTemplate
-                .exchange(GET_COMPANIES_RESPONSE,
-                        HttpMethod.GET,
-                        null,
-                        new ParameterizedTypeReference<>() {
-                        });
-        log.info("End of downloadCompaniesData()");
-        return CompletableFuture.supplyAsync(response::getBody, executorService);
+        return CompletableFuture.supplyAsync(() -> {
+            ResponseEntity<ConcurrentLinkedQueue<CompanyDTO>> response;
+            response = restTemplate
+                    .exchange(HOST + GET_COMPANIES_REQUEST + TOKEN,
+                            HttpMethod.GET,
+                            null,
+                            new ParameterizedTypeReference<>() {
+                            });
+            log.info("end of downloadCompaniesData()");
+            return response.getBody();
+        }, executorService);
     }
 
     public CompletableFuture<List<StockDTO>> getStock(String companySymbol) {
         log.info("begin getStock()");
         return CompletableFuture.supplyAsync(() -> {
-        ResponseEntity<List<StockDTO>> stock = restTemplate.
-                exchange(HOST + "v1/data/core/quote/" + companySymbol + "?token="
-                        + TOKEN, HttpMethod.GET, null,
-                        new ParameterizedTypeReference<>() {
-                });
-//        log.info(String.valueOf(stock.getBody()));
-        return stock.getBody();
+            ResponseEntity<List<StockDTO>> stock = restTemplate.
+                    exchange(HOST + GET_STOCK_REQUEST + companySymbol + TOKEN,
+                            HttpMethod.GET, null,
+                            new ParameterizedTypeReference<>() {
+                            });
+            log.info("end of getStock()");
+            return stock.getBody();
         }, executorService);
     }
 

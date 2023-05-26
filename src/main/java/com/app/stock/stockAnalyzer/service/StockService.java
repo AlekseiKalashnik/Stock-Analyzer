@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @Slf4j(topic = "StockServiceLog:")
@@ -26,11 +27,10 @@ public class StockService {
     private final StockRepository stockRepository;
     private final ModelMapper modelMapper;
 
-    @Transactional
     public List<Stock> processStockData(List<Company> companies) {
         List<StockDTO> stockList = companies.stream()
                 .map(company -> iexApiClient.getStock(company.getSymbol()).join()).flatMap(List::stream).toList();
-        return stockRepository.saveAll(stockList.stream().map(this::convertToStock).collect(Collectors.toList()));
+        return stockRepository.saveAll(stockList.stream().map(this::convertToStock).toList());
 
 //        List<List<Stock>> stockList = companies.stream()
 //                .map(company -> iexApiClient.getStock(company.getSymbol())).toList();

@@ -11,24 +11,36 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.util.concurrent.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j(topic = "StockServiceLog:")
-@Transactional
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class StockService {
     private final IexApiClient iexApiClient;
     private final StockRepository stockRepository;
 
+    @Transactional
     public List<Stock> processStockData(List<Company> companies) {
-        log.info("start processStockData()");
-        List<Stock> stocks = companies.stream()
-                .map(c -> iexApiClient.getStock(c.getSymbol())).toList()
-                .stream()
-                .map(CompletableFuture::join)
-                .toList();
-        return stockRepository.saveAll(stocks);
+        List<Stock> stockList = companies.stream()
+                .map(company -> iexApiClient.getStock(company.getSymbol()).join()).flatMap(List::stream).toList();
+        return stockRepository.saveAll(stockList);
+
+//        List<List<Stock>> stockList = companies.stream()
+//                .map(company -> iexApiClient.getStock(company.getSymbol())).toList();
+//        return stockList.stream().map(stockRepository::saveAll).toList();
+
+
+//        log.info("start processStockData()");
+//                List<Stock> stocks = companies
+//                .stream()
+//                .map(c -> iexApiClient
+//                        .getStock(c.getSymbol()))
+//                        .toList();
+//        log.info("end of processStockData()");
+//        return stockRepository.saveAll(stocks);
     }
 
     public void printTopFiveHighestValueStocks() {
@@ -47,8 +59,9 @@ public class StockService {
         List<Company> freshCompaniesData = iexApiClient.getCompaniesData()
                 .join()
                 .stream()
-                .filter(Company::isEnabled)
+//                .filter(Company::isEnabled)
                 .toList();
+        log.info("start calculating");
         List<Stock> freshStocksData = processStockData(freshCompaniesData);
 
         for (Stock exist : existStocksData) {

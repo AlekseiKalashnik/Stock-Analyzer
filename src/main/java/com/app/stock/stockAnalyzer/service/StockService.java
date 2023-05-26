@@ -1,11 +1,14 @@
 package com.app.stock.stockAnalyzer.service;
 
 import com.app.stock.stockAnalyzer.client.IexApiClient;
+import com.app.stock.stockAnalyzer.dto.CompanyDTO;
+import com.app.stock.stockAnalyzer.dto.StockDTO;
 import com.app.stock.stockAnalyzer.entity.Company;
 import com.app.stock.stockAnalyzer.entity.Stock;
 import com.app.stock.stockAnalyzer.repository.StockRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,12 +24,13 @@ import java.util.stream.Collectors;
 public class StockService {
     private final IexApiClient iexApiClient;
     private final StockRepository stockRepository;
+    private final ModelMapper modelMapper;
 
     @Transactional
     public List<Stock> processStockData(List<Company> companies) {
-        List<Stock> stockList = companies.stream()
+        List<StockDTO> stockList = companies.stream()
                 .map(company -> iexApiClient.getStock(company.getSymbol()).join()).flatMap(List::stream).toList();
-        return stockRepository.saveAll(stockList);
+        return stockRepository.saveAll(stockList.stream().map(this::convertToStock).collect(Collectors.toList()));
 
 //        List<List<Stock>> stockList = companies.stream()
 //                .map(company -> iexApiClient.getStock(company.getSymbol())).toList();
@@ -58,7 +62,7 @@ public class StockService {
         List<Stock> existStocksData = stockRepository.findAll();
         List<Company> freshCompaniesData = iexApiClient.getCompaniesData()
                 .join()
-                .stream()
+                .stream().map(this::convertToCompany)
 //                .filter(Company::isEnabled)
                 .toList();
         log.info("start calculating");
@@ -76,6 +80,15 @@ public class StockService {
                             " has percent diff approximately: " + x.getValue() + "%"));
         }
     }
+
+    private Company convertToCompany(CompanyDTO companyDTO) {
+        return modelMapper.map(companyDTO, Company.class);
+    }
+
+    private Stock convertToStock(StockDTO stockDTO) {
+        return modelMapper.map(stockDTO, Stock.class);
+    }
+
 //    TODO: get data from DB
 //    TODO: use log everywhere instead of sout
 }

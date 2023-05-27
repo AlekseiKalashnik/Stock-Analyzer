@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 @Slf4j(topic = "CompanyServiceLog:")
@@ -21,14 +22,16 @@ public class CompanyService {
     private final CompanyRepository companyRepository;
 
     @Transactional
-    public List<Company> getCompaniesData() {
+    public CompletableFuture<List<Company>> getCompaniesData() {
         log.info("start getCompaniesData()");
-        List<Company> companies = iexApiClient.getCompaniesData()
-                .join().stream().map(this::convertToCompany).toList();
-//                .filter(Company::isEnabled)
-        log.info(companies.toString());
-        log.info("end of getCompaniesData()");
-        return companyRepository.saveAll(companies);
+        return CompletableFuture.supplyAsync(() -> {
+            List<Company> companies = iexApiClient.getCompaniesData()
+                    .join()
+                    .stream().limit(20)
+                    .map(this::convertToCompany)
+                    .toList();
+            return companyRepository.saveAll(companies);
+        });
     }
 
     private Company convertToCompany(CompanyDTO companyDTO) {

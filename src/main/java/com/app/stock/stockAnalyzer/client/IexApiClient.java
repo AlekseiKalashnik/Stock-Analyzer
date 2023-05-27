@@ -4,16 +4,14 @@ import com.app.stock.stockAnalyzer.dto.CompanyDTO;
 import com.app.stock.stockAnalyzer.dto.StockDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.List;
+import java.util.Queue;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
@@ -33,7 +31,7 @@ public class IexApiClient {
     @Value("${iexapi.stock_request}")
     private String GET_STOCK_REQUEST;
 
-    public CompletableFuture<ConcurrentLinkedQueue<CompanyDTO>> getCompaniesData() {
+    public CompletableFuture<Queue<CompanyDTO>> getCompaniesData() {
         log.info("start getCompaniesData()");
         return CompletableFuture.supplyAsync(() -> {
             ResponseEntity<ConcurrentLinkedQueue<CompanyDTO>> response;
@@ -48,10 +46,10 @@ public class IexApiClient {
         }, executorService);
     }
 
-    public CompletableFuture<List<StockDTO>> getStock(String companySymbol) {
+    public CompletableFuture<Queue<StockDTO>> getStock(String companySymbol) {
         log.info("begin getStock()");
         return CompletableFuture.supplyAsync(() -> {
-            ResponseEntity<List<StockDTO>> stock = restTemplate.
+            ResponseEntity<ConcurrentLinkedQueue<StockDTO>> stock = restTemplate.
                     exchange(HOST + GET_STOCK_REQUEST + companySymbol + TOKEN,
                             HttpMethod.GET, null,
                             new ParameterizedTypeReference<>() {
@@ -60,15 +58,5 @@ public class IexApiClient {
             return stock.getBody();
         }, executorService);
     }
-
-//    public List<Stock> getStock(String companySymbol) {
-//        log.info("begin getStock()");
-//        ResponseEntity<List<Stock>> stock = restTemplate.
-//                exchange(HOST + "v1/data/core/quote/" + companySymbol + "?token="
-//                        + TOKEN, HttpMethod.GET, null,
-//                        new ParameterizedTypeReference<>() {
-//                });
-//        log.info(String.valueOf(stock.getBody()));
-//        return stock.getBody();
-//    }
+    //может создать в каждом методе по объекту Future и затем их где-то thenCompose?
 }

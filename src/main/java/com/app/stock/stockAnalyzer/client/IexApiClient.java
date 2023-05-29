@@ -22,7 +22,7 @@ import java.util.concurrent.ExecutorService;
 public class IexApiClient {
     private final ExecutorService executorService;
     private final RestTemplate restTemplate;
-    @Value("${iexapi.host}")
+    @Value("${iexapi.hcom/app/stock/stockAnalyzer/client/IexApiClient.java:25ost}")
     private String HOST;
     @Value("${iexapi.token}")
     private String TOKEN;

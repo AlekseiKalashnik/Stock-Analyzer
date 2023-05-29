@@ -43,9 +43,12 @@ class CompanyServiceTest {
 
         //when
         List<Company> resultList = testRepository.saveAll(companies);
+        Company companyDB = resultList.get(0);
 
         //then
         assertThat(resultList).isNotNull();
         assertThat(resultList.size()).isEqualTo(2);
+        assertThat(companyDB.getSymbol()).isEqualTo("aapl");
+        assertThat(companyDB.getCik()).isEqualTo("f");
     }
 }

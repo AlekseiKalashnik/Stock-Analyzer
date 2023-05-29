@@ -1,45 +1,51 @@
 package com.app.stock.stockAnalyzer.service;
 
-import com.app.stock.stockAnalyzer.client.IexApiClient;
-import com.app.stock.stockAnalyzer.dto.CompanyDTO;
 import com.app.stock.stockAnalyzer.entity.Company;
 import com.app.stock.stockAnalyzer.repository.CompanyRepository;
-import org.checkerframework.checker.units.qual.C;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.List;
-import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @ExtendWith(MockitoExtension.class)
+@DataJpaTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class CompanyServiceTest {
+    private AutoCloseable autoCloseable;
+    @Autowired
+    private CompanyRepository testRepository;
 
-    @Mock
-    private IexApiClient iexApiClient;
-    @Mock
-    private ModelMapper modelMapper;
-    @Mock
-    private CompanyRepository companyRepository;
-    @InjectMocks
-    private CompanyService companyService;
+    @BeforeEach
+    void setUp() {
+        autoCloseable = MockitoAnnotations.openMocks(this);
+    }
+
+    @AfterEach
+    void tearDown() throws Exception {
+        autoCloseable.close();
+    }
 
     @Test
     void shouldGetAndSaveCompanies_getCompaniesDataTest() {
-        Company company = Company.builder().symbol("aapl").cik("f").build();
-        CompanyDTO companyDTO = CompanyDTO.builder().symbol("fb").cik("t").build();
+        //given
         List<Company> companies = List.of(
-                company
-        );
+                Company.builder().symbol("aapl").cik("f").build(),
+                Company.builder().symbol("fb").cik("t").build());
 
-        List<CompanyDTO> actualResult = iexApiClient.getCompaniesData().join().stream().toList();
+        //when
+        List<Company> resultList = testRepository.saveAll(companies);
+
+        //then
+        assertThat(resultList).isNotNull();
+        assertThat(resultList.size()).isEqualTo(2);
     }
-
 }

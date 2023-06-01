@@ -59,7 +59,6 @@ public class IexApiClient {
                                 HttpMethod.GET, null,
                                 new ParameterizedTypeReference<>() {
                                 });
-                log.info(stock.toString());
                 log.info("end of getStock()");
                 return stock.getBody();
             }, executorService);

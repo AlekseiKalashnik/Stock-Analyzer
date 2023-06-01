@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,6 +29,7 @@ public class StockService {
     private final StockRepository stockRepository;
     private final CompanyRepository companyRepository;
     private final ModelMapper modelMapper;
+    private final ExecutorService executorService;
     @Autowired
     @Lazy
     private StockService selfService;
@@ -36,13 +38,13 @@ public class StockService {
     public CompletableFuture<List<Stock>> processStockData(List<Company> companies) {
         return CompletableFuture.supplyAsync(() -> {
         List<Stock> stockList = companies.stream()
-                .map(company -> iexApiClient.getStock(company.getSymbol())).limit(6)
+                .map(company -> iexApiClient.getStock(company.getSymbol()))
                 .map(CompletableFuture::join)
                 .map(Queue::element)
                 .map(this::convertToStock)
                 .toList();
         return stockRepository.saveAll(stockList);
-        });
+        }, executorService);
     }
 
     public void printTopFiveHighestValueStocks() {

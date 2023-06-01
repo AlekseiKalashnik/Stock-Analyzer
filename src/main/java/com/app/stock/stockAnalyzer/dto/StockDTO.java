@@ -1,9 +1,11 @@
 package com.app.stock.stockAnalyzer.dto;
 
 import com.app.stock.stockAnalyzer.entity.Currency;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import lombok.*;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigInteger;
 
@@ -11,6 +13,7 @@ import java.math.BigInteger;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class StockDTO {
     private String symbol;
     private BigInteger avgTotalVolume;
@@ -21,7 +24,6 @@ public class StockDTO {
     private String closeSource;
     private BigInteger closeTime;
     private String companyName;
-    @Enumerated(EnumType.STRING)
     private Currency currency;
     private Double delayedPrice;
     private BigInteger delayedPriceTime;

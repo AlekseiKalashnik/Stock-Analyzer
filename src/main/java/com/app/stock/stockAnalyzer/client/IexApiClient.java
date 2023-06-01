@@ -33,30 +33,38 @@ public class IexApiClient {
 
     public CompletableFuture<Queue<CompanyDTO>> getCompaniesData() {
         log.info("start getCompaniesData()");
-        return CompletableFuture.supplyAsync(() -> {
-            ResponseEntity<ConcurrentLinkedQueue<CompanyDTO>> response;
-            response = restTemplate
-                    .exchange(HOST + GET_COMPANIES_REQUEST + TOKEN,
-                            HttpMethod.GET,
-                            null,
-                            new ParameterizedTypeReference<>() {
-                            });
-            log.info("end of downloadCompaniesData()");
-            return response.getBody();
-        }, executorService);
+        try {
+            return CompletableFuture.supplyAsync(() -> {
+                ResponseEntity<ConcurrentLinkedQueue<CompanyDTO>> response;
+                response = restTemplate
+                        .exchange(HOST + GET_COMPANIES_REQUEST + TOKEN,
+                                HttpMethod.GET,
+                                null,
+                                new ParameterizedTypeReference<>() {
+                                });
+                log.info("end of downloadCompaniesData()");
+                return response.getBody();
+            }, executorService);
+        } catch (RuntimeException e) {
+            return null;
+        }
     }
 
     public CompletableFuture<Queue<StockDTO>> getStock(String companySymbol) {
         log.info("begin getStock()");
-        return CompletableFuture.supplyAsync(() -> {
-            ResponseEntity<ConcurrentLinkedQueue<StockDTO>> stock = restTemplate.
-                    exchange(HOST + GET_STOCK_REQUEST + companySymbol + TOKEN,
-                            HttpMethod.GET, null,
-                            new ParameterizedTypeReference<>() {
-                            });
-            log.info("end of getStock()");
-            return stock.getBody();
-        }, executorService);
+        try {
+            return CompletableFuture.supplyAsync(() -> {
+                ResponseEntity<ConcurrentLinkedQueue<StockDTO>> stock = restTemplate.
+                        exchange(HOST + GET_STOCK_REQUEST + companySymbol + TOKEN,
+                                HttpMethod.GET, null,
+                                new ParameterizedTypeReference<>() {
+                                });
+                log.info(stock.toString());
+                log.info("end of getStock()");
+                return stock.getBody();
+            }, executorService);
+        } catch (RuntimeException e) {
+            return null;
+        }
     }
-    //может создать в каждом методе по объекту Future и затем их где-то thenCompose?
 }

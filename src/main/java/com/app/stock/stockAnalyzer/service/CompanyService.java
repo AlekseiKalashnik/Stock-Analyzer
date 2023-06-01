@@ -27,7 +27,7 @@ public class CompanyService {
         return CompletableFuture.supplyAsync(() -> {
             List<Company> companies = iexApiClient.getCompaniesData()
                     .join()
-                    .stream().limit(20)
+                    .stream()
                     .map(this::convertToCompany)
                     .toList();
             return companyRepository.saveAll(companies);

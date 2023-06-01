@@ -15,36 +15,36 @@ import lombok.NoArgsConstructor;
 public class Company {
     @Id
     @Column
-    String symbol;
+    private String symbol;
     @Column
-    String exchange;
+    private String exchange;
     @Column
-    String exchangeSuffix;
+    private String exchangeSuffix;
     @Column
-    String exchangeName;
+    private String exchangeName;
     @Column
-    String exchangeSegment;
+    private String exchangeSegment;
     @Column
-    String exchangeSegmentName;
+    private String exchangeSegmentName;
     @Column
-    String name;
+    private String name;
     @Column
-    String date;
+    private String date;
     @Column
-    String type;
+    private String type;
     @Column
-    String iexId;
+    private String iexId;
     @Column
-    String region;
+    private String region;
     @Enumerated(EnumType.STRING)
     @Column
-    Currency currency;
+    private Currency currency;
     @Column
-    boolean isEnabled;
+    private boolean isEnabled;
     @Column
-    String figi;
+    private String figi;
     @Column
-    String cik;
+    private String cik;
     @Column
-    String lei;
+    private String lei;
 }

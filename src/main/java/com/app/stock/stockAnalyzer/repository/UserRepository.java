@@ -1,11 +1,14 @@
 package com.app.stock.stockAnalyzer.repository;
 
-import com.app.stock.stockAnalyzer.entity.UserEntity;
+import com.app.stock.stockAnalyzer.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UserRepository extends JpaRepository<UserEntity, Long> {
+public interface UserRepository extends JpaRepository<User, Long> {
 
-//    public UserEntity findByEmail();
+    @Query("SELECT u FROM User u WHERE u.username = :username")
+    public User getUserByUsername(@Param("username") String username);
 }

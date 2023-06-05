@@ -1,7 +1,10 @@
 package com.app.stock.stockAnalyzer.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
@@ -11,19 +14,14 @@ import java.time.LocalDateTime;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserEntity {
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column
     private String username;
     @Column
-    private LocalDateTime createdAt;
+    private String email;
     @Column
-    private Integer providerId;
-
-    @ToString.Include(name = "password")
-    private String maskPassword() {
-        return "********";
-    }
+    private LocalDateTime createdAt;
 }

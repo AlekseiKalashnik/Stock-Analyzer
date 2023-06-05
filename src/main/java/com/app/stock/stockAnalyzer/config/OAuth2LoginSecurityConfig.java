@@ -2,24 +2,22 @@ package com.app.stock.stockAnalyzer.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig {
+public class OAuth2LoginSecurityConfig {
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity
-                .authorizeHttpRequests()
-                .anyRequest()
-                .authenticated()
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.
+                authorizeHttpRequests()
+                .anyRequest().authenticated()
                 .and()
-                .oauth2Login();
-        return httpSecurity.build();
+                .oauth2Login(Customizer.withDefaults());
+        return http.build();
     }
-
-
 }

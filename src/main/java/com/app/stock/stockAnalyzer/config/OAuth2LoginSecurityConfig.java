@@ -14,7 +14,8 @@ public class OAuth2LoginSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.
-                authorizeHttpRequests()
+                csrf().disable()
+                .authorizeHttpRequests()
                 .anyRequest().authenticated()
                 .and()
                 .oauth2Login(Customizer.withDefaults());

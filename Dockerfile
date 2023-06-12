@@ -6,5 +6,5 @@ RUN mvn -f /app/pom.xml clean package -Dmaven.test.skip=true
 FROM openjdk:17-oracle
 EXPOSE 8181
 ARG JAR_FILE=*.jar
-COPY --from=builder /app/target/*.jar /app/*.jar
+COPY --from=builder /app/*.jar /app/*.jar
 ENTRYPOINT ["java", "-jar", "/app/*.jar"]

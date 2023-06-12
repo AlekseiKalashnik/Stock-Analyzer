@@ -1,0 +1,4 @@
+com\app\stock\stockAnalyzer\StockAnalyzerApplicationTests.class
+com\app\stock\stockAnalyzer\service\CompanyServiceTest.class
+com\app\stock\stockAnalyzer\service\StockServiceTest.class
+com\app\stock\stockAnalyzer\client\IexApiClientTest.class

@@ -47,7 +47,7 @@ spec:
     spec:
       containers:
         - name: stock-container
-          image: cr.yandex/crpvfoog9ul2kkas1que/stock:__VERSION__
+          image: cr.yandex/crpvfoog9ul2kkas1que/hello:__VERSION__
           imagePullPolicy: Always
 
 ---

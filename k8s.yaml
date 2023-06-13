@@ -60,7 +60,7 @@ metadata:
     app: stock
 spec:
   ports:
-    - port: 80
+    - port: 8181
       protocol: TCP
   selector:
     app: stock

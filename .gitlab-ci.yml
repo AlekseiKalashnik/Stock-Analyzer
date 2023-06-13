@@ -22,7 +22,6 @@ build:
     # Delete the metadata file.
     - rm /kaniko/token
 
-
 deploy:
   image: gcr.io/cloud-builders/kubectl:latest
   stage: deploy

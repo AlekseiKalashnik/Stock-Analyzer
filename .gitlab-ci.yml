@@ -20,7 +20,7 @@ build:
       --dockerfile "${CI_PROJECT_DIR}/Dockerfile"
       --destination "cr.yandex/crpvfoog9ul2kkas1que/hello:gitlab-$CI_COMMIT_SHORT_SHA"
     # Delete the metadata file.
-    - echo "line 24 is OK"
+    - echo "line 24 OK"
     - echo  $CI_COMMIT_SHORT_SHA
 #    - rm /kaniko/token && echo "line 24 OK"
 

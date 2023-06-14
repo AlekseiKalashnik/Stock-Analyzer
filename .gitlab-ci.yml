@@ -15,9 +15,10 @@ build:
     - wget --header Metadata-Flavor:Google 169.254.169.254/computeMetadata/v1/instance/service-accounts/default/token && cp token /kaniko && echo "line 15 OK"
     - echo "{\"auths\":{\"cr.yandex\":{\"auth\":\"$(printf "%s:%s" "iam" "$(cat /kaniko/token | ./jq -r '.access_token')" | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
     - >-
-      /kaniko/executor && echo "line 18 OK"
+      /kaniko/executor
       --context "${CI_PROJECT_DIR}"
       --dockerfile "${CI_PROJECT_DIR}/Dockerfile"
+      echo "dockerfile"
       --destination "cr.yandex/crpvfoog9ul2kkas1que/hello:gitlab-$CI_COMMIT_SHORT_SHA"
     # Delete the metadata file.
     - echo "line 23 OK"

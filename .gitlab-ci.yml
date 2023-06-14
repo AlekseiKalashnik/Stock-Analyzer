@@ -18,10 +18,8 @@ build:
       /kaniko/executor
       --context "${CI_PROJECT_DIR}"
       --dockerfile "${CI_PROJECT_DIR}/Dockerfile"
-      - echo "dockerfile"
       --destination "cr.yandex/crpvfoog9ul2kkas1que/hello:gitlab-$CI_COMMIT_SHORT_SHA"
     # Delete the metadata file.
-    - echo "line 23 OK"
     - rm /kaniko/token && echo "line 24 OK"
 
 deploy:

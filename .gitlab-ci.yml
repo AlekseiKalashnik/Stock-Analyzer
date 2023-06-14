@@ -18,11 +18,10 @@ build:
       /kaniko/executor
       --context "${CI_PROJECT_DIR}"
       --dockerfile "${CI_PROJECT_DIR}/Dockerfile"
-    - echo "${CI_PROJECT_DIR}/Dockerfile"
       --destination "cr.yandex/crpvfoog9ul2kkas1que/hello:gitlab-$CI_COMMIT_SHORT_SHA"
-    - echo "23"
+     echo "22"
     # Delete the metadata file.
-    - rm /kaniko/token && echo "line 25 OK"
+    - rm /kaniko/token && echo "line 24 OK"
 
 deploy:
   image: gcr.io/cloud-builders/kubectl:latest

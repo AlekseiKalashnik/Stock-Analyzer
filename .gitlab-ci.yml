@@ -10,17 +10,17 @@ build:
   script:
     - mkdir -p /kaniko/.docker
     # Install jq.
-    - wget -O jq https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 && chmod +x ./jq && cp jq /kaniko
+    - wget -O jq https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 && chmod +x ./jq && cp jq /kaniko && echo "line 13 OK"
     # Get a service account token from metadata.
-    - wget --header Metadata-Flavor:Google 169.254.169.254/computeMetadata/v1/instance/service-accounts/default/token && cp token /kaniko
+    - wget --header Metadata-Flavor:Google 169.254.169.254/computeMetadata/v1/instance/service-accounts/default/token && cp token /kaniko && echo "line 15 OK"
     - echo "{\"auths\":{\"cr.yandex\":{\"auth\":\"$(printf "%s:%s" "iam" "$(cat /kaniko/token | ./jq -r '.access_token')" | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
     - >-
-      /kaniko/executor
+      /kaniko/executor && echo "line 18 OK"
       --context "${CI_PROJECT_DIR}"
-      --dockerfile "${CI_PROJECT_DIR}/Dockerfile"
-      --destination "cr.yandex/crpvfoog9ul2kkas1que/hello:gitlab-$CI_COMMIT_SHORT_SHA"
+      --dockerfile "${CI_PROJECT_DIR}/Dockerfile" && echo "line 20 OK"
+      --destination "cr.yandex/crpvfoog9ul2kkas1que/hello:gitlab-$CI_COMMIT_SHORT_SHA" && echo "line 21 OK"
     # Delete the metadata file.
-    - rm /kaniko/token
+    - rm /kaniko/token && echo "line 23 OK"
 
 deploy:
   image: gcr.io/cloud-builders/kubectl:latest

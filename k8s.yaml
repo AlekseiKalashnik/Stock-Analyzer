@@ -24,6 +24,7 @@ spec:
           image: cr.yandex/crpvfoog9ul2kkas1que/__VERSION__
           imagePullPolicy: Always
 
+
 #
 #apiVersion: v1
 #kind: Namespace

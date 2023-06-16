@@ -1,4 +1,4 @@
-FROM maven:3.9.2-openjdk-17 AS builder
+FROM maven:alpine AS builder
 WORKDIR /app
 COPY . /app/.
 RUN mvn -f /app/pom.xml clean package -Dmaven.test.skip=true

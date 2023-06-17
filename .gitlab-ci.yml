@@ -33,6 +33,7 @@ deploy:
     - sed -i "s/__VERSION__/gitlab-$CI_COMMIT_SHORT_SHA/" k8s.yml
     - kubectl apply -f k8s.yaml
 
+
 #work version
 #build-code-job:
 #  stage: build

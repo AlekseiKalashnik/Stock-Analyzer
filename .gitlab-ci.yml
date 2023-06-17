@@ -31,7 +31,7 @@ deploy:
     - kubectl config set-context default --cluster=k8s --user=admin
     - kubectl config use-context default
     - sed -i "s/__VERSION__/gitlab-$CI_COMMIT_SHORT_SHA/" k8s.yml
-    - kubectl apply -f k8s.yaml
+    - kubectl apply -f k8s.yml
 
 #work version
 #build-code-job:

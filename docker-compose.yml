@@ -13,7 +13,7 @@ services:
       - POSTGRES_PASSWORD=1111
       - POSTGRES_DB=stock_db
     ports:
-      - "5433:5433"
+      - "5432:5432"
     restart: always
 
   pgadmin:

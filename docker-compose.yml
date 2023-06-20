@@ -1,10 +1,27 @@
 version: '3.8'
 services:
+  app:
+    image: docker-app
+    ports:
+      - "8181:8181"
+    depends_on:
+      db:
+        condition: service_healthy
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: "stock_app"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db/stock_db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=1111
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=create-drop
+
   db:
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
-      interval: 1s
-      timeout: 5s
+      interval: 3s
+      timeout: 6s
       retries: 10
     image: postgres
     container_name: "postgresql_container"
@@ -14,7 +31,7 @@ services:
       - POSTGRES_DB=stock_db
     ports:
       - "5432:5432"
-    restart: always
+    restart: unless-stopped
 
   pgadmin:
     container_name: pgadmin4_container
@@ -25,23 +42,4 @@ services:
       PGADMIN_DEFAULT_PASSWORD: 1111
     ports:
       - "5050:80"
-
-  app:
-    depends_on:
-      db:
-        condition: service_healthy
-    image: docker-app
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: "stock_app"
-    ports:
-      - "8181:8181"
-    restart: always
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db/stock_db
-      - SPRING_DATASOURCE_USERNAME=postgres
-      - SPRING_DATASOURCE_PASSWORD=1111
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=create-drop
-
 

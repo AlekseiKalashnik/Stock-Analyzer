@@ -21,5 +21,5 @@ spec:
     spec:
       containers:
         - name: hello-world
-          image: cr.yandex/crpvfoog9ul2kkas1que/__VERSION__
+          image: cr.yandex/crpt2j4od8cl0kpuvph9/hello:__VERSION__
           imagePullPolicy: Always

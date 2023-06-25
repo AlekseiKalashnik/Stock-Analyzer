@@ -1,7 +1,6 @@
 stages:
   - build
-  - compose
-  - deploy
+#  - deploy
 
 build:
   stage: build
@@ -22,11 +21,6 @@ build:
       --destination "cr.yandex/crpvfoog9ul2kkas1que/hello:gitlab-$CI_COMMIT_SHORT_SHA"
     # Delete the metadata file.
     - rm /kaniko/token
-
-compose:
-  stage: compose
-  script:
-    - docker compose -f .\docker-compose.yml up
 
 #deploy:
 #  image: gcr.io/cloud-builders/kubectl:latest

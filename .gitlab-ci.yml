@@ -8,8 +8,7 @@ build:
     name: gcr.io/kaniko-project/executor:debug
     entrypoint: [""]
   script:
-    - sudo apt-get update
-    - sudo apt-get install docker-compose-plugin
+    - docker login
     - docker-compose --version
     - docker compose version
     - mkdir -p /kaniko/.docker

@@ -26,7 +26,7 @@ build:
 compose:
   stage: compose
   script:
-    - docker-compose -f docker-compose.yml up
+    - docker compose -f .\docker-compose.yml up
 
 #deploy:
 #  image: gcr.io/cloud-builders/kubectl:latest

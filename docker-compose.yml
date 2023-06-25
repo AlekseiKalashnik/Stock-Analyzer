@@ -12,7 +12,7 @@ services:
       dockerfile: Dockerfile
     container_name: "stock_app"
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db/stock_db
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/stock_db
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=1111
       - SPRING_JPA_HIBERNATE_DDL_AUTO=create-drop

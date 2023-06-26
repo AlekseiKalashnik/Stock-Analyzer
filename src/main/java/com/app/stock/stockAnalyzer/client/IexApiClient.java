@@ -55,7 +55,6 @@ public class IexApiClient {
     }
 
     public CompletableFuture<Queue<StockDTO>> getStock(String companySymbol) {
-        log.info("begin getStock()");
         return CompletableFuture.supplyAsync(() -> {
             ResponseEntity<ConcurrentLinkedQueue<StockDTO>> stock;
                 stock = restTemplate.
@@ -63,7 +62,7 @@ public class IexApiClient {
                                 HttpMethod.GET, null,
                                 new ParameterizedTypeReference<>() {
                                 });
-                log.info("end of getStock()");
+                log.info("stock has gotten");
             return stock.getBody();
         }, executorService);
     }

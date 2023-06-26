@@ -47,14 +47,14 @@ class IexApiClientTest {
     private HttpResponse<String> getCompaniesRequest() throws IOException, InterruptedException {
         HttpClient client = HttpClient.newBuilder().build();
         HttpRequest request = HttpRequest.newBuilder().uri(URI.create("https://api.iex.cloud/v1/data/CORE/REF_DATA" +
-                "?token=sk_acb1e2487637499299d22a252580d311")).build();
+                "?token=sk_248dd1dd76ee4318bea2815dbd0cd6b6")).build();
         return client.send(request, HttpResponse.BodyHandlers.ofString());
     }
 
     private HttpResponse<String> getStockRequest(String symbol) throws IOException, InterruptedException {
         HttpClient client = HttpClient.newBuilder().build();
         HttpRequest request = HttpRequest.newBuilder().uri(URI.create("https://api.iex.cloud/v1/data/core/quote/" + symbol +
-                "?token=sk_acb1e2487637499299d22a252580d311")).build();
+                "?token=sk_248dd1dd76ee4318bea2815dbd0cd6b6")).build();
         return client.send(request, HttpResponse.BodyHandlers.ofString());
     }
 }

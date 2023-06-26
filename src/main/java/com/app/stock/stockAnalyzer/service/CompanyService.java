@@ -28,7 +28,7 @@ public class CompanyService {
             List<Company> companies = iexApiClient.getCompaniesData()
                     .join()
                     .stream()
-                    .map(this::convertToCompany).limit(10)
+                    .map(this::convertToCompany).limit(25)
                     .toList();
             return companyRepository.saveAll(companies);
         });

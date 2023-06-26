@@ -49,7 +49,7 @@ public class StockService {
 
     public void printTopFiveHighestValueStocks() {
         log.info("TopFiveHighestValueStocks:\n");
-        stockRepository.findAll().stream().filter(Objects::nonNull)
+        stockRepository.findAll().stream().filter(Objects::nonNull).limit(5)
                 .sorted(Comparator.comparing(Stock::getPreviousVolume).reversed()
                         .thenComparing(Stock::getCompanyName))
                 .forEach(x -> log.info("Company: " + x.getCompanyName() +

@@ -33,18 +33,3 @@ deploy:
     - sed -i "s/__VERSION__/gitlab-$CI_COMMIT_SHORT_SHA/" k8s.yaml
     - kubectl apply -f k8s.yaml
 
-#work version
-#build-code-job:
-#  stage: build
-#  script:
-#    - echo "Check the ruby version, then build some Ruby project files:"
-#
-#test-code-job1:
-#  stage: test
-#  script:
-#    - echo "If the files are built successfully, test some files with one command:"
-#
-#test-code-job2:
-#  stage: test
-#  script:
-#    - echo "If the files are built successfully, test other files with a different command:"

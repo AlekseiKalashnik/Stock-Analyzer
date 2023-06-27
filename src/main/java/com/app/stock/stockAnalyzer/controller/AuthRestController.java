@@ -1,5 +1,6 @@
 package com.app.stock.stockAnalyzer.controller;
 
+import com.app.stock.stockAnalyzer.dto.UserDTO;
 import com.app.stock.stockAnalyzer.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,19 +10,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Map;
-
 @Slf4j
 @RestController
-@RequestMapping
+@RequestMapping("api/v1/login")
 @RequiredArgsConstructor
-public class Controller {
+public class AuthRestController {
 
     private final UserService userService;
 
-    @GetMapping("/")
-    public Map<String, Object> user(@AuthenticationPrincipal OAuth2User principal) {
+    @GetMapping
+    public UserDTO user(@AuthenticationPrincipal OAuth2User principal) {
         userService.save(principal);
-        return principal.getAttributes();
+        return userService.getUser(principal.getAttribute("name"));
     }
 }

@@ -6,7 +6,7 @@ import com.app.stock.stockAnalyzer.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-//import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,22 +21,22 @@ public class UserService {
     private final ModelMapper modelMapper;
 
 
-//    @Transactional
-//    public void save(OAuth2User principal) {
-//        String username = principal.getAttribute("name");
-//        String email = principal.getAttribute("email");
-//        User existUser = userRepository.getUserByUsername(username);
-//
-//        if (existUser == null) {
-//            User newUser = new User();
-//            newUser.setUsername(username);
-//            newUser.setEmail(email);
-//            newUser.setCreatedAt(LocalDateTime.now());
-//            userRepository.save(newUser);
-//        } else {
-//            throw new RuntimeException();
-//        }
-//    }
+    @Transactional
+    public void save(OAuth2User principal) {
+        String username = principal.getAttribute("name");
+        String email = principal.getAttribute("email");
+        User existUser = userRepository.getUserByUsername(username);
+
+        if (existUser == null) {
+            User newUser = new User();
+            newUser.setUsername(username);
+            newUser.setEmail(email);
+            newUser.setCreatedAt(LocalDateTime.now());
+            userRepository.save(newUser);
+        } else {
+            throw new RuntimeException();
+        }
+    }
 
     public UserDTO getUser(String name) {
         return convertToUserDTO(userRepository.getUserByUsername(name));

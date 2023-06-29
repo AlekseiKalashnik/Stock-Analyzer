@@ -10,17 +10,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Slf4j
-@RestController
-@RequestMapping("api/v1/login")
-@RequiredArgsConstructor
-public class AuthRestController {
-
-    private final UserService userService;
-
-    @GetMapping
-    public UserDTO user(@AuthenticationPrincipal OAuth2User principal) {
-        userService.save(principal);
-        return userService.getUser(principal.getAttribute("name"));
-    }
-}
+//@Slf4j
+//@RestController
+//@RequestMapping("api/v1/login")
+//@RequiredArgsConstructor
+//public class AuthRestController {
+//
+//    private final UserService userService;
+//
+//    @GetMapping
+//    public UserDTO user(@AuthenticationPrincipal OAuth2User principal) {
+//        userService.save(principal);
+//        return userService.getUser(principal.getAttribute("name"));
+//    }
+//}

@@ -9,10 +9,10 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigInteger;
 
-@Entity
-@Table(name = "stock")
 @Data
+@Entity
 @Builder
+@Table(name = "stock")
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)

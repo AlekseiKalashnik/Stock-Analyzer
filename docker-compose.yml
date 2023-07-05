@@ -1,21 +1,57 @@
-#version: '3.8'
-#services:
-#  app:
-#    image: docker-app
-#    ports:
-#      - "8181:8181"
+version: '3.8'
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - 22181:2181
+
+  kafka-1:
+    image: confluentinc/cp-kafka:latest
+    depends_on:
+      - zookeeper
+    ports:
+      - 29092:29092
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-1:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+  kafka-2:
+    image: confluentinc/cp-kafka:latest
+    depends_on:
+      - zookeeper
+    ports:
+      - 39092:39092
+    environment:
+      KAFKA_BROKER_ID: 2
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-2:9092,PLAINTEXT_HOST://localhost:39092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+  app:
+    image: docker-app
+    ports:
+      - "8181:8181"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: "stock_app"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://rc1a-07pnt975z5od37xo.mdb.yandexcloud.net:6432,rc1b-zl6b1j0bi11wc9zj.mdb.yandexcloud.net:6432,rc1c-6qghmtspemttvt3n.mdb.yandexcloud.net:6432/stock_db?targetServerType=master&ssl=true&sslmode=require
+      - SPRING_DATASOURCE_USERNAME=user
+      - SPRING_DATASOURCE_PASSWORD=tele2NewYear
+#      - SPRING_JPA_HIBERNATE_DDL_AUTO=create-drop
 #    depends_on:
 #      db:
 #        condition: service_healthy
-#    build:
-#      context: .
-#      dockerfile: Dockerfile
-#    container_name: "stock_app"
-#    environment:
-#      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/stock_db
-#      - SPRING_DATASOURCE_USERNAME=postgres
-#      - SPRING_DATASOURCE_PASSWORD=1111
-#      - SPRING_JPA_HIBERNATE_DDL_AUTO=create-drop
 #
 #  db:
 #    healthcheck:
@@ -43,6 +79,20 @@
 #    ports:
 #      - "5050:80"
 #
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #---
 #apiVersion: networking.k8s.io/v1

@@ -7,6 +7,9 @@ import com.app.stock.stockAnalyzer.repository.CompanyRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,13 +31,28 @@ public class CompanyService {
             List<Company> companies = iexApiClient.getCompaniesData()
                     .join()
                     .stream()
-                    .map(this::convertToCompany).limit(50)
+                    .map(this::convertToCompany).limit(20)
                     .toList();
             return companyRepository.saveAll(companies);
         });
     }
 
+    public List<CompanyDTO> getAllCompanies() {
+        return companyRepository.findAll()
+                .stream()
+                .map(this::convertToCompanyDTO)
+                .toList();
+    }
+
+    public Page<Company> getPlantPage(Integer pageNumber, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        return companyRepository.findAll(pageable);
+    }
+
     private Company convertToCompany(CompanyDTO companyDTO) {
         return modelMapper.map(companyDTO, Company.class);
+    }
+    private CompanyDTO convertToCompanyDTO(Company company) {
+        return modelMapper.map(company, CompanyDTO.class);
     }
 }

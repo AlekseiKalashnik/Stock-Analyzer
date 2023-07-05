@@ -6,10 +6,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity
-@Table(name = "company")
 @Data
+@Entity
 @Builder
+@Table(name = "company")
 @AllArgsConstructor
 @NoArgsConstructor
 public class Company {

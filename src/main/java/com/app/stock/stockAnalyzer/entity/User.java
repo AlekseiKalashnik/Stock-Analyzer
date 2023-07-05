@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Data
+@Entity
 @Builder
 @Table(name = "users")
-@Entity
 @AllArgsConstructor
 @NoArgsConstructor
 public class User {

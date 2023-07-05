@@ -18,7 +18,7 @@ build:
       /kaniko/executor
       --context "${CI_PROJECT_DIR}"
       --dockerfile "${CI_PROJECT_DIR}/docker-compose.yml"
-      --destination "cr.yandex/crpvfoog9ul2kkas1que/hello:gitlab-$CI_COMMIT_SHORT_SHA"
+      --destination "cr.yandex/crpt2j4od8cl0kpuvph9/hello:gitlab-$CI_COMMIT_SHORT_SHA"
     # Delete the metadata file.
     - rm /kaniko/token
 

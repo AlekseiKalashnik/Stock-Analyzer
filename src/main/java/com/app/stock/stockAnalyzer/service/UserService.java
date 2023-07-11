@@ -34,16 +34,11 @@ public class UserService {
             newUser.setCreatedAt(LocalDateTime.now());
             userRepository.save(newUser);
 
-            sendToTopicUserData(newUser);
+            kafkaProducer.sendMessageToTopic(convertToUserDTO(newUser));
 
         } else {
             throw new RuntimeException();
         }
-    }
-
-    public void sendToTopicUserData(User newUser) {
-        kafkaProducer.sendKafkaMessage("Username: " + newUser.getUsername() +
-                        ", " + "email: " + newUser.getEmail());
     }
 
     public UserDTO getUser(String name) {

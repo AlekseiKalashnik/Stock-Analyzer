@@ -1,5 +1,6 @@
 package com.app.stock.stockAnalyzer.service;
 
+import com.app.stock.stockAnalyzer.dto.UserDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,10 +13,10 @@ import org.springframework.stereotype.Service;
 public class KafkaProducer {
     @Value("${topic.name}")
     private String topic;
-    private final KafkaTemplate<String, String> kafkaTemplate;
+    private final KafkaTemplate<String, UserDTO> kafkaTemplate;
 
-    public void sendKafkaMessage(String kafkaMessage) {
-        kafkaTemplate.send(topic, kafkaMessage);
-        log.info("produced {}", kafkaMessage);
+    public void sendMessageToTopic(UserDTO user) {
+        kafkaTemplate.send(topic, user);
+        log.info("kafka message produced");
     }
 }

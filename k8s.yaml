@@ -24,7 +24,9 @@ spec:
           image: cr.yandex/crpt2j4od8cl0kpuvph9/hello:__VERSION__ #в работе можем менять лишь файл без остановки пода, например на nginx и он будет доступен по этим же портам
           imagePullPolicy: Always
           ports:
-            - containerPort: 80 #открытый ранее порт контейнера
+            - containerPort: 8181
+              name: http
+              #открытый ранее порт контейнера
               #kubectl port-forward (pod-name) 8181(браузер):80(контейнер)
               #Для тех, кто запускает kubectl не у себя, а на удаленном сервере, команда выглядит так:
               #kubectl port-forward --address 0.0.0.0 my-web 8000:80

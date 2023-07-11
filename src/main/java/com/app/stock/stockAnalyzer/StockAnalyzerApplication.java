@@ -13,11 +13,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 public class StockAnalyzerApplication {
 
-    @KafkaListener(topics="message")
-    public void messageListener(String message){
-        System.out.println(message);
-    }
-
     public static void main(String[] args) {
         SpringApplication.run(StockAnalyzerApplication.class, args);
     }

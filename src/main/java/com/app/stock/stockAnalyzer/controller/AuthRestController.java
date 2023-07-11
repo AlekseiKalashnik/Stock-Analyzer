@@ -6,21 +6,26 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
-@RequestMapping("api/v1/login")
 @RequiredArgsConstructor
+@RequestMapping("api/v1/login")
 public class AuthRestController {
-
     private final UserService userService;
+//    private final EmailService emailService;
 
     @GetMapping
-    public UserDTO user(@AuthenticationPrincipal OAuth2User principal) {
+    public UserDTO enterOrSaveUser(@AuthenticationPrincipal OAuth2User principal) {
         userService.save(principal);
         return userService.getUser(principal.getAttribute("name"));
     }
+
+//    @GetMapping("/{user-email}")
+//    public ResponseEntity<String> sendSimpleEmail(@PathVariable("user-email") String email) {
+//        emailService.sendSimpleEmail(email, "Welcome to Stock-Analyzer", "This is for you!");
+//        log.info("email was send");
+//        return new ResponseEntity<>("Please check your email inbox", HttpStatus.OK);
+//    }
 }

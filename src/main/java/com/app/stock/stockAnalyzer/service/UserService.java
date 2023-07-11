@@ -13,13 +13,13 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 
 @Service
-@Slf4j(topic = "UserServiceLog:")
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
+@Slf4j(topic = "UserServiceLog:")
 public class UserService {
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
-
+    private final KafkaProducer kafkaProducer;
 
     @Transactional
     public void save(OAuth2User principal) {
@@ -33,9 +33,17 @@ public class UserService {
             newUser.setEmail(email);
             newUser.setCreatedAt(LocalDateTime.now());
             userRepository.save(newUser);
+
+            sendToTopicUserData(newUser);
+
         } else {
             throw new RuntimeException();
         }
+    }
+
+    public void sendToTopicUserData(User newUser) {
+        kafkaProducer.sendKafkaMessage("Username: " + newUser.getUsername() +
+                        ", " + "email: " + newUser.getEmail());
     }
 
     public UserDTO getUser(String name) {
